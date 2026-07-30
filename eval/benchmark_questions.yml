@@ -1,0 +1,26 @@
+questions:
+  - id: revenue_001
+    question: What was total revenue last month?
+    category: revenue
+    expected_metric: revenue
+    expected_tables: [fact_sales, dim_date]
+  - id: revenue_002
+    question: Compare revenue by region for the last quarter.
+    category: revenue
+    expected_metric: revenue
+    expected_tables: [fact_sales, dim_store, dim_date]
+  - id: customer_001
+    question: Which customer segment has the highest average order value?
+    category: customer
+    expected_metric: average_order_value
+    expected_tables: [fact_sales, dim_customer]
+  - id: store_001
+    question: Which stores are underperforming against the previous month?
+    category: store
+    expected_metric: revenue
+    expected_tables: [fact_sales, dim_store, dim_date]
+  - id: product_001
+    question: Which product category has the highest gross margin?
+    category: product
+    expected_metric: gross_margin
+    expected_tables: [fact_sales, dim_product]

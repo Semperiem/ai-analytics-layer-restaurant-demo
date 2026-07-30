@@ -1,0 +1,1 @@
+select * from {{ source('restaurant_raw', 'order_items') }}
