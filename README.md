@@ -100,6 +100,22 @@ For each question, the app shows:
 - result table
 - short business answer
 
+## PostgreSQL for WrenAI
+
+The default local app uses DuckDB. For WrenAI, this repo also includes a dedicated PostgreSQL deployment that loads the same synthetic restaurant data:
+
+```bash
+cp .env.postgres.example .env.postgres
+# edit POSTGRES_PASSWORD and optionally TAILSCALE_IP
+scripts/load_postgres_for_wrenai.sh
+```
+
+WrenAI connection guide:
+
+```text
+docs/wrenai_postgres_connection.md
+```
+
 ## Remote access via Tailscale
 
 For a persistent demo that survives reboot and is reachable from other devices on your

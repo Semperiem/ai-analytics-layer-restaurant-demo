@@ -1,0 +1,28 @@
+services:
+  restaurant-demo-postgres:
+    image: postgres:16-alpine
+    container_name: restaurant-demo-postgres
+    restart: unless-stopped
+    env_file:
+      - .env.postgres
+    ports:
+      # Optional laptop/BI-tool access through Tailscale or localhost.
+      # WrenAI should use the Docker hostname `restaurant-demo-postgres:5432`.
+      - "${TAILSCALE_IP:-127.0.0.1}:5435:5432"
+    volumes:
+      - restaurant_demo_postgres_data:/var/lib/postgresql/data
+      - ./data/synthetic:/demo_data:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - wrenai_wren
+
+volumes:
+  restaurant_demo_postgres_data:
+
+networks:
+  wrenai_wren:
+    external: true
