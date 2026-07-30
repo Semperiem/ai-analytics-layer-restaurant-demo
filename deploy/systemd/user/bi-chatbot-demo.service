@@ -1,0 +1,15 @@
+[Unit]
+Description=AI Analytics Layer - Restaurant BI Chatbot Demo (Streamlit)
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=__REPO_DIR__
+ExecStart=__VENV_DIR__/bin/streamlit run app/streamlit_app.py --server.address=127.0.0.1 --server.port=8501 --server.headless=true --browser.gatherUsageStats=false
+Restart=on-failure
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=default.target

@@ -100,6 +100,40 @@ For each question, the app shows:
 - result table
 - short business answer
 
+## Remote access via Tailscale
+
+For a persistent demo that survives reboot and is reachable from other devices on your
+[Tailscale](https://tailscale.com) network, install the app as a `systemd --user` service:
+
+```bash
+scripts/install_user_service.sh
+```
+
+This script (idempotent — safe to re-run):
+
+1. Builds the DuckDB warehouse (`scripts/build_duckdb.py`) using the repo `.venv`.
+2. Renders `deploy/systemd/user/bi-chatbot-demo.service` into
+   `~/.config/systemd/user/` and points it at this repo's `.venv/bin/streamlit`.
+3. Runs `systemctl --user daemon-reload`, `enable`, and `restart` for the service,
+   which binds Streamlit to `127.0.0.1:8501`.
+4. Tries to enable **linger** (`loginctl enable-linger`) so the service keeps running
+   after you log out and starts automatically at boot. This step needs root; if it
+   can't get it, the script does **not** run `sudo` itself — it prints the exact
+   command to run (`sudo loginctl enable-linger <user>`).
+5. Publishes the local app through **Tailscale Serve** on HTTPS port `8501`, tailnet-only.
+6. Prints the Tailscale MagicDNS URL to open the demo remotely, e.g.
+   `https://<machine>.<tailnet>.ts.net:8501`.
+
+Manage the running service with:
+
+```bash
+systemctl --user status bi-chatbot-demo.service
+systemctl --user restart bi-chatbot-demo.service
+journalctl --user -u bi-chatbot-demo.service -f
+```
+
+**Security note:** Streamlit itself binds to `127.0.0.1:8501` only. Remote access is provided by Tailscale Serve, so the public URL is tailnet-only and only works from devices logged into your Tailscale network. No `sudo` or system-wide service changes are made by this script.
+
 ## Demo files
 
 - `scripts/build_duckdb.py` — builds `warehouse/restaurant.duckdb` from synthetic CSV files.
